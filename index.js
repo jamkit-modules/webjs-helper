@@ -85,7 +85,6 @@ WebJSHelper.__error_callback = function(callback_name) {
 }
 
 WebJSHelper.__evaluate = function(script) {
-    console.log(script)
     view.object(WebJSHelper.__id).action("evaluate", {
         "script":script
     });
