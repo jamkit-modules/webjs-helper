@@ -1,59 +1,69 @@
 WebJSHelper = (function() {
     return {
-        __id: "", __bridge: ""
+        _id: "", _bridge: ""
     }
 })();
 
 WebJSHelper.initialize = function(id, bridge) {
-    WebJSHelper.__id = id;
-    WebJSHelper.__bridge = bridge;
+    this._id = id, this._bridge = bridge;
 
-    return WebJSHelper;
+    return this;
 }
 
 WebJSHelper.import = function(path) {
     if (Array.isArray(path)) {
         path.forEach(function(path) {
-            WebJSHelper.__evaluate(path);
+            this._evaluate(path);
         });
     } else {
-        WebJSHelper.__evaluate(path);
+        this._evaluate(path);
     }
 }
 
 WebJSHelper.call = function(name, params) {
-    return new Promise(function(resolve, reject) {
-        var [ resolve_name, reject_name ] = WebJSHelper.__promise_callbacks(resolve, reject);
+    var self = this;
 
-        WebJSHelper.__evaluate(name + "(" + 
-            (params ? WebJSHelper.__unfold_params(params) + "," : "") +
-            WebJSHelper.__result_callback(resolve_name) + "," +
-            WebJSHelper.__error_callback(reject_name) + 
+    return new Promise(function(resolve, reject) {
+        var [ resolve_name, reject_name ] = self._promise_callbacks(resolve, reject);
+
+        self._evaluate(name + "(" + 
+            (params ? self._unfold_params(params) + "," : "") +
+            self._result_callback(resolve_name) + "," +
+            self._error_callback(reject_name) + 
         ")")
     });
 }
 
-WebJSHelper.__promise_callbacks = function(resolve, reject) {
-    var unique = (Math.random() * 10000).toFixed(0)
+WebJSHelper.blob = function(path, content_type) {
+    return new Promise(function(resolve, reject) {
+        read("/", path.substring(1)).then(function(bytes) {
+            
+        })
+    });
+}
 
-    WebJSHelper["resolve" + unique] = function(result) { 
+WebJSHelper._promise_callbacks = function(resolve, reject) {
+    var unique = (Math.random() * 10000).toFixed(0)
+    var self = this;
+
+    this["resolve" + unique] = function(result) { 
         resolve(JSON.parse(result["result"]));
 
-        delete WebJSHelper["resolve" + unique];
-        delete WebJSHelper["reject"  + unique];
+        delete self["resolve" + unique];
+        delete self["reject"  + unique];
     }
 
-    WebJSHelper["reject" + unique] = function(error) { 
+    this["reject" + unique] = function(error) { 
         reject(JSON.parse(error["error"]));
 
-        delete WebJSHelper["resolve" + unique];
-        delete WebJSHelper["reject"  + unique];
+        delete self["resolve" + unique];
+        delete self["reject"  + unique];
     }
 
     return ["resolve" + unique, "reject" + unique]
 }
 
-WebJSHelper.__unfold_params = function(params) {
+WebJSHelper._unfold_params = function(params) {
     var string = ""
 
     params.forEach(function(param) {
@@ -66,26 +76,26 @@ WebJSHelper.__unfold_params = function(params) {
     return string;
 }
 
-WebJSHelper.__result_callback = function(callback_name) {
+WebJSHelper._result_callback = function(callback_name) {
     return "function(result) {" +
-        WebJSHelper.__bridge + ".postMessage(JSON.stringify({" +
+        this._bridge + ".postMessage(JSON.stringify({" +
             "\"script\":\"WebJSHelper." + callback_name + "\"," +
             "\"result\":JSON.stringify(result || \"undefined\")" +
         "}))" +
     "}"
 }
 
-WebJSHelper.__error_callback = function(callback_name) {
+WebJSHelper._error_callback = function(callback_name) {
     return "function(error) {" +
-        WebJSHelper.__bridge + ".postMessage(JSON.stringify({" +
+        this._bridge + ".postMessage(JSON.stringify({" +
             "\"script\":\"WebJSHelper." + callback_name + "\"," +
             "\"error\":JSON.stringify(error || \"undefined\")" +
         "}))" +
     "}"
 }
 
-WebJSHelper.__evaluate = function(script) {
-    view.object(WebJSHelper.__id).action("evaluate", {
+WebJSHelper._evaluate = function(script) {
+    view.object(this._id).action("evaluate", {
         "script":script
     });
 }
