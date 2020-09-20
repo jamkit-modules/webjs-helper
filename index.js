@@ -53,7 +53,7 @@ var module = (function() {
     }
     
     function _evaluate(script) {
-        view.object(this._id).action("evaluate", {
+        view.object(_id).action("evaluate", {
             "script":script
         });
     }
