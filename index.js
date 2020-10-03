@@ -4,21 +4,21 @@ var module = (function() {
     function _promise_callbacks(resolve, reject) {
         var unique = (Math.random() * 10000).toFixed(0)
         
-        global["__resolve_" + unique] = function(result) { 
+        global["webjs__resolve_" + unique] = function(result) { 
             resolve(JSON.parse(result["result"]));
     
-            delete global["__resolve_" + unique];
-            delete global["__reject_"  + unique];
+            delete global["webjs__resolve_" + unique];
+            delete global["webjs__reject_"  + unique];
         }
     
-        global["__reject_" + unique] = function(error) { 
+        global["webjs__reject_" + unique] = function(error) { 
             reject(JSON.parse(error["error"]));
     
-            delete global["__resolve_" + unique];
-            delete global["__reject_"  + unique];
+            delete global["webjs__resolve_" + unique];
+            delete global["webjs__reject_"  + unique];
         }
     
-        return [ "__resolve_" + unique, "__reject_" + unique ]
+        return [ "webjs__resolve_" + unique, "webjs__reject_" + unique ]
     }
     
     function _unfold_params(params) {
@@ -89,9 +89,13 @@ var module = (function() {
         
         blob: function(path, content_type) {
             return new Promise(function(resolve, reject) {
-                read("/", path.substring(1)).then(function(bytes) {
+                read("/", path.substring(1))
+                    .then(function(bytes) {
                     
-                })
+                    })
+                    .catch(function(error) {
+                    
+                    });
             });
         },
     }
