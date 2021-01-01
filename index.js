@@ -5,15 +5,14 @@ var module = (function() {
         var unique = (Math.random() * 10000).toFixed(0)
         
         global["webjs__resolve_" + unique] = function(result) { 
-            console.log(result["result"])
-            resolve(JSON.parse(result["result"]));
+            resolve(_parse_result(result["result"]));
     
             delete global["webjs__resolve_" + unique];
             delete global["webjs__reject_"  + unique];
         }
     
         global["webjs__reject_" + unique] = function(error) { 
-            reject(JSON.parse(error["error"]));
+            reject(_parse_result(error["error"]));
     
             delete global["webjs__resolve_" + unique];
             delete global["webjs__reject_"  + unique];
@@ -33,6 +32,12 @@ var module = (function() {
         });
     
         return string;
+    }
+
+    function _parse_result(result) {
+        if (result) {
+            return JSON.parse(result);
+        }
     }
     
     function _result_callback(callback_name) {
