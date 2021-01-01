@@ -5,6 +5,7 @@ var module = (function() {
         var unique = (Math.random() * 10000).toFixed(0)
         
         global["webjs__resolve_" + unique] = function(result) { 
+            console.log(result["result"])
             resolve(JSON.parse(result["result"]));
     
             delete global["webjs__resolve_" + unique];
@@ -38,7 +39,7 @@ var module = (function() {
         return "function(result) {" +
             _bridge + ".postMessage(JSON.stringify({" +
                 "\"script\":\"" + callback_name + "\"," +
-                "\"result\":JSON.stringify(result || \"undefined\")" +
+                "\"result\":JSON.stringify(result)" +
             "}))" +
         "}"
     }
@@ -47,7 +48,7 @@ var module = (function() {
         return "function(error) {" +
             _bridge + ".postMessage(JSON.stringify({" +
                 "\"script\":\"" + callback_name + "\"," +
-                "\"error\":JSON.stringify(error || \"undefined\")" +
+                "\"error\":JSON.stringify(error)" +
             "}))" +
         "}"
     }
