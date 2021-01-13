@@ -5,14 +5,14 @@ var module = (function() {
         var unique = (Math.random() * 10000).toFixed(0)
         
         global["webjs__resolve_" + unique] = function(result) { 
-            resolve(_parse_result(result["result"]));
+            resolve(JSON.parse(result["result"]));
     
             delete global["webjs__resolve_" + unique];
             delete global["webjs__reject_"  + unique];
         }
     
         global["webjs__reject_" + unique] = function(error) { 
-            reject(_parse_result(error["error"]));
+            reject(JSON.parse(error["error"]));
     
             delete global["webjs__resolve_" + unique];
             delete global["webjs__reject_"  + unique];
@@ -33,18 +33,12 @@ var module = (function() {
     
         return string;
     }
-
-    function _parse_result(result) {
-        if (result) {
-            return JSON.parse(result);
-        }
-    }
     
     function _result_callback(callback_name) {
         return "function(result) {" +
             _bridge + ".postMessage(JSON.stringify({" +
                 "\"script\":\"" + callback_name + "\"," +
-                "\"result\":JSON.stringify(result)" +
+                "\"result\":JSON.stringify(result || \"undefined\")" +
             "}))" +
         "}"
     }
@@ -53,7 +47,7 @@ var module = (function() {
         return "function(error) {" +
             _bridge + ".postMessage(JSON.stringify({" +
                 "\"script\":\"" + callback_name + "\"," +
-                "\"error\":JSON.stringify(error)" +
+                "\"error\":JSON.stringify(error || \"undefined\")" +
             "}))" +
         "}"
     }
