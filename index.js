@@ -38,7 +38,7 @@ var module = (function() {
         return "function(result) {" +
             _bridge + ".postMessage(JSON.stringify({" +
                 "\"script\":\"" + callback_name + "\"," +
-                "\"result\":JSON.stringify(result || \"undefined\")" +
+                "\"result\":(result !== undefined) ? JSON.stringify(result) : \"undefined\"" +
             "}))" +
         "}"
     }
@@ -47,7 +47,7 @@ var module = (function() {
         return "function(error) {" +
             _bridge + ".postMessage(JSON.stringify({" +
                 "\"script\":\"" + callback_name + "\"," +
-                "\"error\":JSON.stringify(error || \"undefined\")" +
+                "\"error\":(error !== undefined) ? JSON.stringify(error) : \"undefined\"" +
             "}))" +
         "}"
     }
