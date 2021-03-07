@@ -54,7 +54,7 @@ var module = (function() {
     
     function _evaluate(script) {
         view.object(_id).action("evaluate", {
-            "script":script
+            "script": script
         });
     }
     
@@ -83,7 +83,7 @@ var module = (function() {
                     (params ? _unfold_params(params) + "," : "") +
                     _result_callback(resolve_name) + "," +
                     _error_callback(reject_name) + 
-                ")")
+                ")");
             });
         },
         
