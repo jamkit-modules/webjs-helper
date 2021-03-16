@@ -2,7 +2,7 @@ var module = (function() {
     var _id = "", _bridge = "";
 
     function _promise_callbacks(resolve, reject) {
-        var unique = (Math.random() * 10000).toFixed(0)
+        var unique = (Math.random() * 10000).toFixed(0);
         
         global["webjs__resolve_" + unique] = function(result) { 
             resolve(result["result"] !== "undefined" ? JSON.parse(result["result"]) : undefined);
@@ -18,7 +18,7 @@ var module = (function() {
             delete global["webjs__reject_"  + unique];
         }
     
-        return [ "webjs__resolve_" + unique, "webjs__reject_" + unique ]
+        return [ "webjs__resolve_" + unique, "webjs__reject_" + unique ];
     }
     
     function _unfold_params(params) {
@@ -40,7 +40,7 @@ var module = (function() {
                 "\"script\":\"" + callback_name + "\"," +
                 "\"result\":(result !== undefined) ? JSON.stringify(result) : \"undefined\"" +
             "}))" +
-        "}"
+        "}";
     }
     
     function _error_callback(callback_name) {
@@ -49,7 +49,7 @@ var module = (function() {
                 "\"script\":\"" + callback_name + "\"," +
                 "\"error\":(error !== undefined) ? JSON.stringify(error) : \"undefined\"" +
             "}))" +
-        "}"
+        "}";
     }
     
     function _evaluate(script) {
