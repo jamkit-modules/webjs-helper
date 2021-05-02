@@ -2,23 +2,23 @@ var module = (function() {
     var _id = "", _bridge = "";
 
     function _promise_callbacks(resolve, reject) {
-        var unique = (Math.random() * 10000).toFixed(0);
+        var unique = (Math.random() * 10000).toFixed(0)
         
         global["webjs__resolve_" + unique] = function(result) { 
-            resolve(result["result"] !== "undefined" ? JSON.parse(result["result"]) : undefined);
+            resolve(_parse_result(result["result"]));
     
             delete global["webjs__resolve_" + unique];
             delete global["webjs__reject_"  + unique];
         }
     
         global["webjs__reject_" + unique] = function(error) { 
-            reject(error["error"] !== "undefined" ? JSON.parse(error["error"]) : undefined);
+            reject(_parse_result(error["error"]));
     
             delete global["webjs__resolve_" + unique];
             delete global["webjs__reject_"  + unique];
         }
     
-        return [ "webjs__resolve_" + unique, "webjs__reject_" + unique ];
+        return [ "webjs__resolve_" + unique, "webjs__reject_" + unique ]
     }
     
     function _unfold_params(params) {
@@ -33,28 +33,34 @@ var module = (function() {
     
         return string;
     }
+
+    function _parse_result(result) {
+        if (result) {
+            return JSON.parse(result);
+        }
+    }
     
     function _result_callback(callback_name) {
         return "function(result) {" +
             _bridge + ".postMessage(JSON.stringify({" +
                 "\"script\":\"" + callback_name + "\"," +
-                "\"result\":(result !== undefined) ? JSON.stringify(result) : \"undefined\"" +
+                "\"result\":JSON.stringify(result)" +
             "}))" +
-        "}";
+        "}"
     }
     
     function _error_callback(callback_name) {
         return "function(error) {" +
             _bridge + ".postMessage(JSON.stringify({" +
                 "\"script\":\"" + callback_name + "\"," +
-                "\"error\":(error !== undefined) ? JSON.stringify(error) : \"undefined\"" +
+                "\"error\":JSON.stringify(error)" +
             "}))" +
-        "}";
+        "}"
     }
     
     function _evaluate(script) {
         view.object(_id).action("evaluate", {
-            "script": script
+            "script":script
         });
     }
     
@@ -83,7 +89,7 @@ var module = (function() {
                     (params ? _unfold_params(params) + "," : "") +
                     _result_callback(resolve_name) + "," +
                     _error_callback(reject_name) + 
-                ")");
+                ")")
             });
         },
         
