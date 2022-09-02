@@ -4,15 +4,15 @@ var module = (function() {
     function _promise_callbacks(resolve, reject) {
         var unique = (Math.random() * 10000).toFixed(0);
         
-        global["webjs__resolve_" + unique] = function(result) { 
-            resolve(result["result"] !== "undefined" ? JSON.parse(result["result"]) : undefined);
+        global["webjs__resolve_" + unique] = function({ result }) {
+            resolve(result !== "undefined" ? JSON.parse(result) : undefined);
     
             delete global["webjs__resolve_" + unique];
             delete global["webjs__reject_"  + unique];
         }
     
-        global["webjs__reject_" + unique] = function(error) { 
-            reject(error["error"] !== "undefined" ? JSON.parse(error["error"]) : undefined);
+        global["webjs__reject_" + unique] = function({ error }) { 
+            reject(error !== "undefined" ? JSON.parse(error) : undefined);
     
             delete global["webjs__resolve_" + unique];
             delete global["webjs__reject_"  + unique];
@@ -22,7 +22,7 @@ var module = (function() {
     }
     
     function _unfold_params(params) {
-        var string = ""
+        var string = "";
     
         params.forEach(function(param) {
             if (string.length > 0) {
@@ -40,7 +40,7 @@ var module = (function() {
                 "\"script\":\"" + callback_name + "\"," +
                 "\"result\":(result !== undefined) ? JSON.stringify(result) : \"undefined\"" +
             "}))" +
-        "}";
+        "}"
     }
     
     function _error_callback(callback_name) {
@@ -49,7 +49,7 @@ var module = (function() {
                 "\"script\":\"" + callback_name + "\"," +
                 "\"error\":(error !== undefined) ? JSON.stringify(error) : \"undefined\"" +
             "}))" +
-        "}";
+        "}"
     }
     
     function _evaluate(script) {
@@ -57,14 +57,19 @@ var module = (function() {
             "script": script
         });
     }
-    
+
     return {
         initialize: function(id, bridge) {
+            var dir_path = this.__ENV__["dir-path"];
+
             _id = id, _bridge = bridge;
-        
+
+            _evaluate(dir_path + "/bridge.js");
+            _evaluate("webjs.initialize(\"" + bridge + "\")");
+
             return this;
         },
-        
+
         import: function(path) {
             if (Array.isArray(path)) {
                 path.forEach(function(path) {
@@ -86,7 +91,13 @@ var module = (function() {
                 ")");
             });
         },
-        
+
+        callback: function(name, params) {
+            _evaluate(name + "(" +
+                (params ? JSON.stringify(params) : "") +
+            ")");
+        },
+
         blob: function(path, content_type) {
             return new Promise(function(resolve, reject) {
                 read("/", path.substring(1))
