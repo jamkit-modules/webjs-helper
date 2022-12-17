@@ -2,7 +2,7 @@ window.webjs = (function() {
     var _bridge = "";
 
     function _promise_callbacks(resolve, reject) {
-        var unique = (Math.random() * 10000).toFixed(0)
+        var unique = (Math.random() * 10000).toFixed(0);
         
         window["webjs__resolve_" + unique] = function(result) { 
             resolve(result);
@@ -18,7 +18,7 @@ window.webjs = (function() {
             delete window["webjs__reject_"  + unique];
         }
     
-        return [ "webjs__resolve_" + unique, "webjs__reject_" + unique ]
+        return [ "webjs__resolve_" + unique, "webjs__reject_" + unique ];
     }
 
     return {
