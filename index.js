@@ -65,7 +65,7 @@ var module = (function() {
             _id = id, _bridge = bridge;
 
             _evaluate(dir_path + "/bridge.js");
-            _evaluate("webjs.initialize(\"" + bridge + "\")");
+            _evaluate("webjs.initialize(\"" + bridge + "\", \"" + $env["OS"] + "\")");
 
             return this;
         },
