@@ -22,7 +22,7 @@ window.webjs = (function() {
     }
 
     return {
-        initialize: function(bridge, os) {
+        configure: function(bridge, os) {
             if (os === "iOS") {
                 window[bridge] = window.webkit.messageHandlers[bridge];
             }

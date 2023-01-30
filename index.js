@@ -36,7 +36,7 @@ var module = (function() {
     
     function _result_callback(callback_name) {
         return "function(result) {" +
-            _bridge + ".postMessage(JSON.stringify({" +
+            "window[\"" + _bridge + "\"].postMessage(JSON.stringify({" +
                 "\"script\":\"" + callback_name + "\"," +
                 "\"result\":(result !== undefined) ? JSON.stringify(result) : \"undefined\"" +
             "}))" +
@@ -45,7 +45,7 @@ var module = (function() {
     
     function _error_callback(callback_name) {
         return "function(error) {" +
-            _bridge + ".postMessage(JSON.stringify({" +
+            "window[\"" + _bridge + "\"].postMessage(JSON.stringify({" +
                 "\"script\":\"" + callback_name + "\"," +
                 "\"error\":(error !== undefined) ? JSON.stringify(error) : \"undefined\"" +
             "}))" +
@@ -59,13 +59,13 @@ var module = (function() {
     }
 
     return {
-        initialize: function(id, bridge) {
+        configure: function(id, bridge) {
             var dir_path = this.__ENV__["dir-path"];
 
             _id = id, _bridge = bridge;
 
             _evaluate(dir_path + "/bridge.js");
-            _evaluate("webjs.initialize(\"" + bridge + "\", \"" + $env["OS"] + "\")");
+            _evaluate("webjs.configure(\"" + bridge + "\", \"" + $env["OS"] + "\")");
 
             return this;
         },
