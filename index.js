@@ -4,14 +4,14 @@ const module = (() => {
     function _promise_callbacks(resolve, reject) {
         const unique = (Math.random() * 10000).toFixed(0);
         
-        global["webjs__resolve_" + unique] = function({ result }) {
+        global["webjs__resolve_" + unique] = ({ result }) => {
             resolve(result !== "undefined" ? JSON.parse(result) : undefined);
     
             delete global["webjs__resolve_" + unique];
             delete global["webjs__reject_"  + unique];
         }
     
-        global["webjs__reject_" + unique] = function({ error }) { 
+        global["webjs__reject_" + unique] = ({ error }) => { 
             reject(error !== "undefined" ? JSON.parse(error) : undefined);
     
             delete global["webjs__resolve_" + unique];
@@ -24,7 +24,7 @@ const module = (() => {
     function _unfold_params(params) {
         var string = "";
     
-        params.forEach(function(param) {
+        params.forEach((param) => {
             if (string.length > 0) {
                 string += ",";
             }
@@ -59,7 +59,7 @@ const module = (() => {
     }
 
     return {
-        initialize: function(id, bridge) {
+        initialize: (id, bridge) => {
             const dir_path = this.__ENV__["dir-path"];
 
             _id = id, _bridge = bridge;
@@ -70,7 +70,7 @@ const module = (() => {
             return this;
         },
 
-        import: function(path) {
+        import: (path) => {
             if (Array.isArray(path)) {
                 path.forEach(function(path) {
                     _evaluate(path);
@@ -80,8 +80,8 @@ const module = (() => {
             }
         },
         
-        call: function(name, params) {
-            return new Promise(function(resolve, reject) {
+        call: (name, params) => {
+            return new Promise((resolve, reject) => {
                 const [ resolve_name, reject_name ] = _promise_callbacks(resolve, reject);
         
                 _evaluate(name + "(" + 
@@ -92,19 +92,19 @@ const module = (() => {
             });
         },
 
-        callback: function(name, params) {
+        callback: (name, params) => {
             _evaluate(name + "(" +
                 (params ? JSON.stringify(params) : "") +
             ")");
         },
 
-        blob: function(path, content_type) {
-            return new Promise(function(resolve, reject) {
+        blob: (path, content_type) => {
+            return new Promise((resolve, reject) => {
                 read("/", path.substring(1))
-                    .then(function(bytes) {
+                    .then((bytes) => {
                     
                     })
-                    .catch(function(error) {
+                    .catch((error) => {
                     
                     });
             });
