@@ -72,7 +72,7 @@ const module = (() => {
 
         import: (path) => {
             if (Array.isArray(path)) {
-                path.forEach(function(path) {
+                path.forEach((path) => {
                     _evaluate(path);
                 });
             } else {
