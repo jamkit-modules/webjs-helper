@@ -1,8 +1,8 @@
-var module = (function() {
+const module = (() => {
     var _id = "", _bridge = "";
 
     function _promise_callbacks(resolve, reject) {
-        var unique = (Math.random() * 10000).toFixed(0);
+        const unique = (Math.random() * 10000).toFixed(0);
         
         global["webjs__resolve_" + unique] = function({ result }) {
             resolve(result !== "undefined" ? JSON.parse(result) : undefined);
@@ -60,7 +60,7 @@ var module = (function() {
 
     return {
         initialize: function(id, bridge) {
-            var dir_path = this.__ENV__["dir-path"];
+            const dir_path = this.__ENV__["dir-path"];
 
             _id = id, _bridge = bridge;
 
@@ -82,7 +82,7 @@ var module = (function() {
         
         call: function(name, params) {
             return new Promise(function(resolve, reject) {
-                var [ resolve_name, reject_name ] = _promise_callbacks(resolve, reject);
+                const [ resolve_name, reject_name ] = _promise_callbacks(resolve, reject);
         
                 _evaluate(name + "(" + 
                     (params ? _unfold_params(params) + "," : "") +
