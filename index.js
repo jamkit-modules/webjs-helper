@@ -1,4 +1,4 @@
-const module = (() => {
+const module = (function() {
     var _id = "", _bridge = "";
 
     function _promise_callbacks(resolve, reject) {
@@ -59,7 +59,7 @@ const module = (() => {
     }
 
     return {
-        initialize: (id, bridge) => {
+        initialize: function(id, bridge) {
             const dir_path = this.__ENV__["dir-path"];
 
             _id = id, _bridge = bridge;
@@ -70,7 +70,7 @@ const module = (() => {
             return this;
         },
 
-        import: (path) => {
+        import: function(path) {
             if (Array.isArray(path)) {
                 path.forEach((path) => {
                     _evaluate(path);
@@ -80,7 +80,7 @@ const module = (() => {
             }
         },
         
-        call: (name, params) => {
+        call: function(name, params) {
             return new Promise((resolve, reject) => {
                 const [ resolve_name, reject_name ] = _promise_callbacks(resolve, reject);
         
@@ -92,13 +92,13 @@ const module = (() => {
             });
         },
 
-        callback: (name, params) => {
+        callback: function(name, params) {
             _evaluate(name + "(" +
                 (params ? JSON.stringify(params) : "") +
             ")");
         },
 
-        blob: (path, content_type) => {
+        blob: function(path, content_type) {
             return new Promise((resolve, reject) => {
                 read("/", path.substring(1))
                     .then((bytes) => {
