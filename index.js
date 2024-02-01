@@ -4,21 +4,21 @@ const module = (function() {
     function _promise_callbacks(resolve, reject) {
         const unique = (Math.random() * 10000).toFixed(0);
         
-        global["webjs__resolve_" + unique] = ({ result }) => {
+        global[`webjs__resolve_${unique}`] = ({ result }) => {
             resolve(result !== "undefined" ? JSON.parse(result) : undefined);
     
-            delete global["webjs__resolve_" + unique];
-            delete global["webjs__reject_"  + unique];
+            delete global[`webjs__resolve_${unique}`];
+            delete global[`webjs__reject_${unique}`];
         }
     
-        global["webjs__reject_" + unique] = ({ error }) => { 
+        global[`webjs__reject_${unique}`] = ({ error }) => { 
             reject(error !== "undefined" ? JSON.parse(error) : undefined);
     
-            delete global["webjs__resolve_" + unique];
-            delete global["webjs__reject_"  + unique];
+            delete global[`webjs__resolve_${unique}`];
+            delete global[`webjs__reject_${unique}`];
         }
     
-        return [ "webjs__resolve_" + unique, "webjs__reject_" + unique ];
+        return [ `webjs__resolve_${unique}`, `webjs__reject_${unique}` ];
     }
     
     function _unfold_params(params) {
@@ -35,21 +35,21 @@ const module = (function() {
     }
     
     function _result_callback(callback_name) {
-        return "function(result) {" +
-            "window[\"" + _bridge + "\"]" + ".postMessage(JSON.stringify({" +
-                "\"script\":\"" + callback_name + "\"," +
-                "\"result\":(result !== undefined) ? JSON.stringify(result) : \"undefined\"" +
-            "}))" +
-        "}"
+        return `function(result) {` +
+            `window["${_bridge}"].postMessage(JSON.stringify({` +
+                `"script":"${callback_name}",` +
+                `"result":(result !== undefined) ? JSON.stringify(result) : "undefined"` +
+            `}))` +
+        `}`
     }
     
     function _error_callback(callback_name) {
-        return "function(error) {" +
-            "window[\"" + _bridge + "\"]" + ".postMessage(JSON.stringify({" +
-                "\"script\":\"" + callback_name + "\"," +
-                "\"error\":(error !== undefined) ? JSON.stringify(error) : \"undefined\"" +
-            "}))" +
-        "}"
+        return `function(error) {` +
+            `window["${_bridge}"].postMessage(JSON.stringify({` +
+                `"script":"${callback_name}",` +
+                `"error":(error !== undefined) ? JSON.stringify(error) : "undefined"` +
+            `}))` +
+        `}`
     }
     
     function _evaluate(script) {
@@ -64,8 +64,8 @@ const module = (function() {
 
             _id = id, _bridge = bridge;
 
-            _evaluate(dir_path + "/bridge.js");
-            _evaluate("webjs.initialize(\"" + bridge + "\")");
+            _evaluate(`${dir_path}/bridge.js`);
+            _evaluate(`webjs.initialize("${bridge}")`);
 
             return this;
         },
